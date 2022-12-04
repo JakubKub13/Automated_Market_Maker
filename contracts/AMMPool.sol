@@ -29,7 +29,7 @@ contract AMMPool {
     }
 
     function sell(uint256 _amountTokensToSell) public {
-        //require
+        require(balances[msg.sender] >= _amountTokensToSell && _amountTokensToSell > 0, "AMMPool: Can not sell 0 tokens");
         totalSupply = totalSupply.sub(_amountTokensToSell);
         uint256 balanceAcc = balances[msg.sender];
         balances[msg.sender] = balanceAcc.sub(_amountTokensToSell);
