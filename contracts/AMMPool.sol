@@ -30,14 +30,14 @@ contract AMMPool {
 
     function buyingPriceCalculation(uint256 _amountToDeposit) public view returns (uint256) {
         uint256 currentPrice = tokenPriceCalculation();
-        return _amountToDeposit / currentPrice;
+        return _amountToDeposit.div(currentPrice);
     }
 
     function tokenPriceCalculation() public view returns (uint256) {
         // We use it because of power func behavior in SOLIDITY
         uint256 tempVar = totalSupply.mul(totalSupply);
         // this should return token price
-        return slope.mul(tempVar);
+        return tempVar.mul(slope);
     }
 
 }
