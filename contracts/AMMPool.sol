@@ -20,6 +20,15 @@ contract AMMPool {
         slope = _slope;
     }
 
+    function buy() public payable {
+        require(msg.value > 0, "AMMPool: Can not buy any tokens for 0 ");
+        uint256 amountToMint = buyingPriceCalculation();
+        totalSupply = totalSupply.add(amountToMint);
+        balances[msg.sender] = amountToMint;
+    }
+
+    function buyingPriceCalculation() public view returns (uint256) {}
+
 
 
 }
