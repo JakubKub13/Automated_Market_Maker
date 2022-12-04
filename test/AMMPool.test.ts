@@ -12,12 +12,12 @@ describe("AMMPool", () => {
         const slope: number = 1;
         const ammPool: AMMPool = await ammPoolFactory.deploy(initialSupply, slope);
         const tokenPrice: BigNumber = await ammPool.tokenPriceCalculation();
-        console.log(ethers.utils.formatEther(tokenPrice))
+        console.log(tokenPrice)
 
-        const stBuyTx = await ammPool.buy({ value: ethers.utils.parseEther("2") });
+        const stBuyTx = await ammPool.buy({ value: ethers.utils.parseEther("20") });
         await stBuyTx.wait();
 
         const balance: BigNumber = await ammPool.balances(owner.address);
-        console.log(ethers.utils.formatEther(balance))
+        console.log(balance)
      });
 });
