@@ -17,6 +17,9 @@ describe("AMMPool", () => {
         const stBuyTx = await ammPool.buy({ value: ethers.utils.parseEther("20") });
         await stBuyTx.wait();
 
+        const newTokenPrice = await ammPool.tokenPriceCalculation();
+        console.log(newTokenPrice);
+
         const balance: BigNumber = await ammPool.balances(owner.address);
         console.log(balance)
      });
