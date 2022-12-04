@@ -27,8 +27,15 @@ contract AMMPool {
         balances[msg.sender] = amountToMint;
     }
 
-    function buyingPriceCalculation() public view returns (uint256) {}
+    function buyingPriceCalculation() public view returns (uint256) {
+        
+    }
 
-
+    function tokenPriceCalculation() public view returns (uint256) {
+        // We use it because of power func behavior in SOLIDITY
+        uint256 tempVar = totalSupply.mul(totalSupply);
+        // this should return token price
+        return slope.mul(tempVar);
+    }
 
 }
