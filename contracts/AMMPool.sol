@@ -37,7 +37,10 @@ contract AMMPool {
         return _amountToDeposit.div(currentPrice);
     }
 
-    function sellingPriceCalculation(uint256)
+    function sellingPriceCalculation(uint256 _amountToSell) public view returns (uint256) {
+        uint256 currentPrice = tokenPriceCalculation();
+        return _amountToSell.mul(currentPrice);
+    }
 
     function tokenPriceCalculation() public view returns (uint256) {
         // We use it because of power func behavior in SOLIDITY
