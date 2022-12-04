@@ -28,8 +28,14 @@ contract AMMPool {
         balances[msg.sender] = currentBalance.add(amountToMint);
     }
 
-    function sell(uint256 _amountTokensToSell) public returns (uint256) {
-        uint256 ethToReturn = 
+    function sell(uint256 _amountTokensToSell) public {
+        //require
+        totalSupply = totalSupply.sub(_amountTokensToSell);
+        uint256 balanceAcc = balances[msg.sender];
+        balances[msg.sender] = balanceAcc.sub(_amountTokensToSell);
+        uint256 ethToReturn = sellingPriceCalculation(_amountTokensToSell);
+        payable(msg.sender).transfer(ethToReturn);
+
     }
 
     function buyingPriceCalculation(uint256 _amountToDeposit) public view returns (uint256) {
