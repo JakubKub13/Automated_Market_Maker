@@ -28,10 +28,16 @@ contract AMMPool {
         balances[msg.sender] = currentBalance.add(amountToMint);
     }
 
+    function sell(uint256 _amountTokensToSell) public returns (uint256) {
+        uint256 ethToReturn = 
+    }
+
     function buyingPriceCalculation(uint256 _amountToDeposit) public view returns (uint256) {
         uint256 currentPrice = tokenPriceCalculation();
         return _amountToDeposit.div(currentPrice);
     }
+
+    function sellingPriceCalculation(uint256)
 
     function tokenPriceCalculation() public view returns (uint256) {
         // We use it because of power func behavior in SOLIDITY
