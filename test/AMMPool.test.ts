@@ -17,5 +17,8 @@ describe("AMMPool", () => {
         const stBuyTx = await ammPool.buy({ value: ethers.utils.parseEther("2") });
         await stBuyTx.wait();
 
+        const balance: BigNumber = await ammPool.balances(owner.address);
+        console.log(ethers.utils.formatEther(balance))
+
      });
 });
