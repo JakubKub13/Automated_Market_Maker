@@ -22,13 +22,15 @@ contract AMMPool {
 
     function buy() public payable {
         require(msg.value > 0, "AMMPool: Can not buy any tokens for 0 ");
-        uint256 amountToMint = buyingPriceCalculation();
+        uint256 amountToMint = buyingPriceCalculation(msg.value);
         totalSupply = totalSupply.add(amountToMint);
-        balances[msg.sender] = amountToMint;
+        uint256 currentBalance = balances[msg.sender];
+        balances[msg.sender] = currentBalance.add(amountToMint);
     }
 
-    function buyingPriceCalculation() public view returns (uint256) {
-        
+    function buyingPriceCalculation(uint256 _amountToDeposit) public view returns (uint256) {
+        uint256 currentPrice = tokenPriceCalculation();
+        return _amountToDeposit / currentPrice;
     }
 
     function tokenPriceCalculation() public view returns (uint256) {
