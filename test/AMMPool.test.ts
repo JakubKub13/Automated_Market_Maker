@@ -19,6 +19,5 @@ describe("AMMPool", () => {
 
         const balance: BigNumber = await ammPool.balances(owner.address);
         console.log(ethers.utils.formatEther(balance))
-
      });
 });
