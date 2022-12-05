@@ -72,7 +72,20 @@ contract ConstantProductAMM{
      * @notice user can call this function to provide liquidity in tokenA and tokenB 
      * and earn fees
      */
-    function addLiquidity() external {}
+    function addLiquidity(uint256 _amountA, uint256 _amountB) external returns (uint256 liquidityShares) {
+        // Pull in tokenA and tokenB
+        tokenA.transferFrom(msg.sender, address(this), _amountA);
+        tokenB.transferFrom(msg.sender, address(this), _amountB);
+        // we need to check the price of tokens has not changed yet to prevent manipulation
+        // dy / dx = Y / X
+        if (reserveA > 0 || reserveB > 0) {
+            require(reserveA * _amountA == reserveB * _amountB, "ConstantProductAMM: Price manipulation detected");
+        }
+        // Mint liquidity shares
+        // s = dx / x * T = dy / y * T
+        
+        // Update reserves of tokens
+    }
 
     /**
      * @notice user can remove liquidity and get back his tokens plus traiding fee
