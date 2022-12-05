@@ -7,11 +7,14 @@ contract ConstantProductAMM{
     IERC20 public immutable tokenA;
     IERC20 public immutable tokenB;
     // Vars to keep track how much tokenA and tokenB is in the contract
+    // We need to keep the track of reserves to prevent users directly sends tokenA and tokenB to manupulate the balances -> swaps and liquidity shares mechanisms
     uint256 public reserveA;
     uint256 public reserveB;
     // Vars to keep track of totalSupplyShares and shares for user
     uint256 public totalSupplyShares;
     mapping(address => uint256) public sharesPerUser;
+
+    event SWAP(address tokenIn, address tokenOut, uint256 amountIn, uint256 amountOut);
 
     constructor(address _tokenA, address _tokenB) {
         tokenA = IERC20(_tokenA);
@@ -58,8 +61,11 @@ contract ConstantProductAMM{
         // Transfer token out to msg.sender
         tokenOut.transfer(msg.sender, amountOut);
         // Update the reserves of tokens
-
-
+        _updateReserves(
+            tokenA.balanceOf(address(this)),
+            tokenB.balanceOf(address(this))
+        );
+        emit SWAP(_tokenIn, address(tokenOut), _amountIn, amountOut);
     }
 
     /**
