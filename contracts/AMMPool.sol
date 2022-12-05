@@ -34,7 +34,7 @@ contract AMMPool {
         uint256 balanceAcc = balances[msg.sender];
         balances[msg.sender] = balanceAcc.sub(_amountTokensToSell);
         uint256 ethToReturn = sellingPriceCalculation(_amountTokensToSell);
-        require(address(this).balance >= ethToReturn, "AMMPool: Not enough ETH in pool to sent");
+        require(address(this).balance >= ethToReturn, "AMMPool: Not enough ETH in pool to sent");  //check this
         payable(msg.sender).transfer(ethToReturn);
 
     }
@@ -55,5 +55,7 @@ contract AMMPool {
         // this should return token price
         return tempVar.mul(slope);
     }
+
+    receive() external payable {}
 
 }
