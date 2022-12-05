@@ -40,6 +40,22 @@ contract ConstantProductAMM{
     }
 
     /**
+     * @notice math function to get square root of uint
+     */
+    function _sqrt(uint256 y) private pure returns (uint256 z) {
+        if (y > 3) {
+            z = y;
+            uint256 x = y / 2 + 1;
+            while (x < z) {
+                z = x;
+                x = (y / x + x) / 2;
+            }
+        } else if (y != 0) {
+            z = 1;
+        }
+    }
+
+    /**
      * @notice user can call this function to perform swap between tokenA and tokenB
      * @param _tokenIn => either tokenA or tokenB
      * @param _amountIn => amount of tokenA or tokenB which user is selling
@@ -83,7 +99,7 @@ contract ConstantProductAMM{
         }
         // Mint liquidity shares
         // s = dx / x * T = dy / y * T
-        
+
         // Update reserves of tokens
     }
 
