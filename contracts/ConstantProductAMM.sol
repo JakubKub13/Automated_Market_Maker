@@ -56,6 +56,13 @@ contract ConstantProductAMM{
     }
 
     /**
+     * @notice function returns lower value of inputs
+     */
+    function _min(uint256 x, uint256 y) private pure returns (uint256) {
+        return x <= y ? x : y;
+    }
+
+    /**
      * @notice user can call this function to perform swap between tokenA and tokenB
      * @param _tokenIn => either tokenA or tokenB
      * @param _amountIn => amount of tokenA or tokenB which user is selling
@@ -95,10 +102,16 @@ contract ConstantProductAMM{
         // we need to check the price of tokens has not changed yet to prevent manipulation
         // dy / dx = Y / X
         if (reserveA > 0 || reserveB > 0) {
-            require(reserveA * _amountA == reserveB * _amountB, "ConstantProductAMM: Price manipulation detected");
+            require(reserveA * _amountB == reserveB * _amountA, "ConstantProductAMM: Price manipulation detected");
         }
         // Mint liquidity shares
+        // f(x, y) = balue of liquidity = _sqrt(xy)
         // s = dx / x * T = dy / y * T
+        if (totalSupplyShares == 0) {
+            liquidityShares = _sqrt(_amountA * _amountB);
+        } else {
+            liquidityShares = 
+        }
 
         // Update reserves of tokens
     }
