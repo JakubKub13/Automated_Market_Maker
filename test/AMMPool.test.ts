@@ -40,11 +40,10 @@ describe("AMMPool", () => {
         const stSellTx = await ammPool.sell(balance);
         await stSellTx.wait();
 
-        // const newTokenPrice2: BigNumber = await ammPool.tokenPriceCalculation();
-        // console.log(newTokenPrice2);
+        const newTokenPrice2: BigNumber = await ammPool.tokenPriceCalculation();
+        console.log(newTokenPrice2);
         
-        // const newBalance: BigNumber = await ammPool.balances(owner.address);
-        // console.log(newBalance);
-
+        const newBalance: BigNumber = await ammPool.balances(owner.address);
+        console.log(`Balance of owner after selling ${newBalance}`);
      });
 });
