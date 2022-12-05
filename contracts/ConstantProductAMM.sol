@@ -27,4 +27,27 @@ contract ConstantProductAMM{
         sharesPerUser[_from] -= _amount;
         totalSupplyShares -= _amount;
     }
+
+    /**
+     * @notice user can call this function to perform swap between tokenA and tokenB
+     * @param _tokenIn => either tokenA or tokenB
+     * @param _amountIn => amount of tokenA or tokenB which user is selling
+     * @return amountOut => amount of tokenA or tokenB which is send to user after swap
+     */
+    function swap(address _tokenIn, uint256 _amountIn) external returns (uint256 amountOut) {
+        require(_tokenIn == address(tokenA) || _tokenIn == address(tokenB), "ConstantProductAMM: Invalid token input");
+        require(_amountIn > 0, "ConstantProductAMM: _amountIn can not be 0");
+
+    }
+
+    /**
+     * @notice user can call this function to provide liquidity in tokenA and tokenB 
+     * and earn fees
+     */
+    function addLiquidity() external {}
+
+    /**
+     * @notice user can remove liquidity and get back his tokens plus traiding fee
+     */
+    function removeLiquidity() external {}
 }
