@@ -29,6 +29,14 @@ contract ConstantProductAMM{
     }
 
     /**
+     * @notice internal function to update state of reserves
+     */
+    function _updateReserves(uint256 _reserveA, uint256 _reserveB) private {
+        reserveA = _reserveA;
+        reserveB = _reserveB;
+    }
+
+    /**
      * @notice user can call this function to perform swap between tokenA and tokenB
      * @param _tokenIn => either tokenA or tokenB
      * @param _amountIn => amount of tokenA or tokenB which user is selling
@@ -39,18 +47,18 @@ contract ConstantProductAMM{
         require(_amountIn > 0, "ConstantProductAMM: _amountIn can not be 0");
         // Pull token in
         bool isTokenA = _tokenIn == address(tokenA);
-        (IERC20 tokenIn, IERC20 tokenOut) = isTokenA
-            ? (tokenA, tokenB)
-            : (tokenB, tokenA);
+        (IERC20 tokenIn, IERC20 tokenOut, uint256 reserveIn, uint256 reserveOut) = isTokenA
+            ? (tokenA, tokenB, reserveA, reserveB)
+            : (tokenB, tokenA, reserveB, reserveA);
         tokenIn.transferFrom(msg.sender, address(this), _amountIn);
         // Calculate token out with fees, fee = 0.3 %
         // dy(amountOut) = ydx / (x + dx)
         uint256 amountInWithFee = (_amountIn * 997) / 1000;
-        amountOut = ()
-
+        amountOut = (reserveOut * amountInWithFee) / (reserveIn * amountInWithFee);
         // Transfer token out to msg.sender
         tokenOut.transfer(msg.sender, amountOut);
         // Update the reserves of tokens
+
 
     }
 
