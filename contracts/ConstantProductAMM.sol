@@ -37,6 +37,20 @@ contract ConstantProductAMM{
     function swap(address _tokenIn, uint256 _amountIn) external returns (uint256 amountOut) {
         require(_tokenIn == address(tokenA) || _tokenIn == address(tokenB), "ConstantProductAMM: Invalid token input");
         require(_amountIn > 0, "ConstantProductAMM: _amountIn can not be 0");
+        // Pull token in
+        bool isTokenA = _tokenIn == address(tokenA);
+        (IERC20 tokenIn, IERC20 tokenOut) = isTokenA
+            ? (tokenA, tokenB)
+            : (tokenB, tokenA);
+        tokenIn.transferFrom(msg.sender, address(this), _amountIn);
+        // Calculate token out with fees, fee = 0.3 %
+        // dy(amountOut) = ydx / (x + dx)
+        uint256 amountInWithFee = (_amountIn * 997) / 1000;
+        amountOut = ()
+
+        // Transfer token out to msg.sender
+        tokenOut.transfer(msg.sender, amountOut);
+        // Update the reserves of tokens
 
     }
 
