@@ -1,5 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { expect } from "chai";
+import { exec } from "child_process";
 import { Contract } from "ethers";
 import { ethers, network } from "hardhat"
 import { ConstantProductAMM, ConstantProductAMM__factory } from "../typechain-types";
@@ -66,5 +67,21 @@ describe("ConstantProductAMM", () => {
         const tetherOwnerBal = await tether.balanceOf(owner.address);
         expect(ethers.utils.formatEther(daiOwnerBal)).to.eq("1000.0");
         expect(ethers.utils.formatUnits(tetherOwnerBal, 6)).to.eq("1000.0")
+    });
+
+    describe("Test Swapping funcionality", () => {
+        beforeEach(async () => {
+            const sendDaiTx = await dai.connect(owner).transfer(acc1.address, ethers.utils.parseEther("100"));
+            await sendDaiTx.wait();
+            const sendTetherTx = await tether.connect(owner).transfer(acc1.address, ethers.utils.parseUnits("100", 6));
+            await sendTetherTx.wait();
+        });
+
+        it("Account 1 should be funded on mainnet fork from owner", async () => {
+            const acc1BalDAI = await dai.balanceOf(acc1.address);
+            expect(ethers.utils.formatEther(acc1BalDAI)).to.eq("100.0");
+            const acc1BalTether = await tether.balanceOf(acc1.address);
+            expect(ethers.utils.formatUnits(acc1BalTether, 6)).to.eq("100.0");
+        });
     });
 })
