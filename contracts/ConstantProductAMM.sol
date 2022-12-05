@@ -129,5 +129,24 @@ contract ConstantProductAMM{
     /**
      * @notice user can remove liquidity and get back his tokens plus traiding fee
      */
-    function removeLiquidity() external {}
+    function removeLiquidity(uint256 _liquidityShares) external returns (uint256 amountA, uint256 amountB) {
+        // Calculation of amountA and amountB to withdraw
+        // dx = s / T * x
+        // dy = s / T * y
+        uint256 balA = tokenA.balanceOf(address(this));
+        uint256 balB = tokenB.balanceOf(address(this));
+        amountA = (_liquidityShares * balA) / totalSupplyShares;
+        amountB = (_liquidityShares * balB) / totalSupplyShares;
+        require(amountA > 0 && amountB > 0, "ConstantProductAMM: amountA or amountB == 0");
+        // Burning of liquidity shares
+        _burn(msg.sender, _liquidityShares);
+        // Update reserves of tokens
+        _updateReserves(
+            balA - amountA,
+            balB - amountB
+        );
+        // Transfer tokens back to liquidity provider
+        tokenA.transfer(msg.sender, amountA);
+        tokenB.transfer(msg.sender, amountB);
+    }
 }
