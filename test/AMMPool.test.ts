@@ -11,6 +11,10 @@ describe("AMMPool", () => {
         const initialSupply: BigNumber = ethers.utils.parseUnits("20", 8);
         const slope: number = 1;
         const ammPool: AMMPool = await ammPoolFactory.deploy(initialSupply, slope);
+
+        const contractBalance = await ethers.provider.getBalance(ammPool.address);
+        console.log(`Balance of contract is ${contractBalance}`);
+
         const tokenPrice: BigNumber = await ammPool.tokenPriceCalculation();
         console.log(tokenPrice)
 

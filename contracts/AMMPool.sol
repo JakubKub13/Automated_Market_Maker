@@ -34,6 +34,7 @@ contract AMMPool {
         uint256 balanceAcc = balances[msg.sender];
         balances[msg.sender] = balanceAcc.sub(_amountTokensToSell);
         uint256 ethToReturn = sellingPriceCalculation(_amountTokensToSell);
+        require(address(this).balance >= ethToReturn, "AMMPool: Not enough ETH in pool to sent");
         payable(msg.sender).transfer(ethToReturn);
 
     }
