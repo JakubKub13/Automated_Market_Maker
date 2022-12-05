@@ -15,6 +15,7 @@ contract ConstantProductAMM{
     mapping(address => uint256) public sharesPerUser;
 
     event SWAP(address tokenIn, address tokenOut, uint256 amountIn, uint256 amountOut);
+    event ADD_LIQUIDITY(address liquidityProvider, uint256 amountA, uint256 amountB, uint256 liquidityShares);
 
     constructor(address _tokenA, address _tokenB) {
         tokenA = IERC20(_tokenA);
@@ -110,10 +111,19 @@ contract ConstantProductAMM{
         if (totalSupplyShares == 0) {
             liquidityShares = _sqrt(_amountA * _amountB);
         } else {
-            liquidityShares = 
+            liquidityShares = _min(
+                (_amountA * totalSupplyShares) / reserveA,
+                (_amountB * totalSupplyShares) / reserveB
+            );
         }
-
+        require(liquidityShares > 0, "ConstantProductAMM: No liquidity shares to mint");
+        _mint(msg.sender, liquidityShares);
         // Update reserves of tokens
+        _updateReserves(
+            tokenA.balanceOf(address(this)),
+            tokenB.balanceOf(address(this))
+        );
+        emit ADD_LIQUIDITY(msg.sender, _amountA, _amountB, liquidityShares);
     }
 
     /**
