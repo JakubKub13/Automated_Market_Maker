@@ -4,13 +4,13 @@ import { Contract } from "ethers";
 import { ethers, network } from "hardhat"
 import { ConstantProductAMM, ConstantProductAMM__factory } from "../typechain-types";
 
-const DAI_WHALE: string = "0x075e72a5eDf65F0A5f44699c7654C1a76941Ddc8";
-const USDC_WHALE: string = "0xB60C61DBb7456f024f9338c739B02Be68e3F545C";
+const DAI_WHALE: string = "0xAEb2DAe192b2836735851Fd06a42aD04E7e99f3B";
+const TETHER_WHALE: string = "0x9bdB521a97E95177BF252C253E256A60C3e14447";
 
 const TOKEN_A_ADDRESS: string = "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063"; // DAI polygon
-const TOKEN_B_ADDRESS: string = "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"; // USDC polygon
-const AMOUNT_DAI_TO_SEND = 1000n * 10n ** 18n // 1000 DAI
-const AMOUNT_USDC_TO_SEND = 1000n * 10n ** 18n // 1000 USDC
+const TOKEN_B_ADDRESS: string = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"; // TETHER polygon
+const AMOUNT_DAI_TO_SEND = "1000" //1000 DAI
+const AMOUNT_TETHER_TO_SEND = "1000" // 1000 TETHER
 
 
 describe("ConstantProductAMM", () => {
@@ -18,11 +18,11 @@ describe("ConstantProductAMM", () => {
     let acc1: SignerWithAddress;
     let acc2: SignerWithAddress;
     let daiWhale: SignerWithAddress;
-    let usdcWhale: SignerWithAddress;
+    let tetherWhale: SignerWithAddress;
     let cAmmFactory: ConstantProductAMM__factory;
     let constantProductAMM: ConstantProductAMM;
     let dai: Contract;
-    let usdc: Contract;
+    let tether: Contract;
 
 
     beforeEach(async () => {
@@ -35,16 +35,16 @@ describe("ConstantProductAMM", () => {
 
         dai = await ethers.getContractAt("IERC20", TOKEN_A_ADDRESS);
         daiWhale = await ethers.getSigner(DAI_WHALE);
-        await dai.connect(daiWhale).transfer(owner.address, AMOUNT_DAI_TO_SEND);
+        await dai.connect(daiWhale).transfer(owner.address, ethers.utils.parseEther(AMOUNT_DAI_TO_SEND));
 
         await network.provider.request({
             method: "hardhat_impersonateAccount",
-            params: [USDC_WHALE]
+            params: [TETHER_WHALE]
         });
 
-        usdc = await ethers.getContractAt("IERC20", TOKEN_B_ADDRESS);
-        usdcWhale = await ethers.getSigner(USDC_WHALE);
-        await usdc.connect(usdcWhale).transfer(owner.address, AMOUNT_USDC_TO_SEND);
+        tether = await ethers.getContractAt("IERC20", TOKEN_B_ADDRESS);
+        tetherWhale = await ethers.getSigner(TETHER_WHALE);
+        await tether.connect(tetherWhale).transfer(owner.address, ethers.utils.parseUnits(AMOUNT_TETHER_TO_SEND, 6));
 
         cAmmFactory = await ethers.getContractFactory("ConstantProductAMM");
         constantProductAMM = await cAmmFactory.deploy(
@@ -61,10 +61,10 @@ describe("ConstantProductAMM", () => {
         expect(_tokenB).to.eq("0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174");
     });
 
-    it("Owner account should be funded on forked mainnet with DAI and USDC", async () => {
+    it("Owner account should be funded on forked mainnet with DAI and TETHER", async () => {
         const daiOwnerBal = await dai.balanceOf(owner.address);
-        const usdcOwnerBal = await usdc.balanceOf(owner.address);
-        console.log(`Dai balance of owner is: ${ethers.utils.formatEther(daiOwnerBal)}`);
-        console.log(`USDC balance of owner is: ${ethers.utils.formatEther(usdcOwnerBal)}`);
-    })
+        const tetherOwnerBal = await tether.balanceOf(owner.address);
+        expect(ethers.utils.formatEther(daiOwnerBal)).to.eq("1000.0");
+        expect(ethers.utils.formatUnits(tetherOwnerBal, 6)).to.eq("1000.0")
+    });
 })
