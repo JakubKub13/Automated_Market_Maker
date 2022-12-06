@@ -1,7 +1,7 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { expect } from "chai";
 import { exec } from "child_process";
-import { Contract } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import { ethers, network } from "hardhat"
 import { ConstantProductAMM, ConstantProductAMM__factory } from "../typechain-types";
 
@@ -59,12 +59,12 @@ describe("ConstantProductAMM", () => {
         let _tokenA = await constantProductAMM.tokenA();
         let _tokenB = await constantProductAMM.tokenB();
         expect(_tokenA).to.eq("0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063");
-        expect(_tokenB).to.eq("0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174");
+        expect(_tokenB).to.eq("0xc2132D05D31c914a87C6611C10748AEb04B58e8F");
     });
 
     it("Owner account should be funded on forked mainnet with DAI and TETHER", async () => {
-        const daiOwnerBal = await dai.balanceOf(owner.address);
-        const tetherOwnerBal = await tether.balanceOf(owner.address);
+        const daiOwnerBal:BigNumber = await dai.balanceOf(owner.address);
+        const tetherOwnerBal:BigNumber = await tether.balanceOf(owner.address);
         expect(ethers.utils.formatEther(daiOwnerBal)).to.eq("1000.0");
         expect(ethers.utils.formatUnits(tetherOwnerBal, 6)).to.eq("1000.0")
     });
@@ -78,10 +78,16 @@ describe("ConstantProductAMM", () => {
         });
 
         it("Account 1 should be funded on mainnet fork from owner", async () => {
-            const acc1BalDAI = await dai.balanceOf(acc1.address);
+            const acc1BalDAI:BigNumber = await dai.balanceOf(acc1.address);
             expect(ethers.utils.formatEther(acc1BalDAI)).to.eq("100.0");
-            const acc1BalTether = await tether.balanceOf(acc1.address);
+            const acc1BalTether:BigNumber = await tether.balanceOf(acc1.address);
             expect(ethers.utils.formatUnits(acc1BalTether, 6)).to.eq("100.0");
         });
+
+        it("Should be able to add liquidity and receive liquidity tokens", async () => {
+
+        });
+
+        it("")
     });
 })
