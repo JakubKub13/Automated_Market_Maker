@@ -43,10 +43,10 @@ contract ConstantProductAMM{
     /**
      * @notice math function to get square root of uint
      */
-    function _sqrt(uint256 y) private pure returns (uint256 z) {
+    function _sqrt(uint y) private pure returns (uint z) {
         if (y > 3) {
             z = y;
-            uint256 x = y / 2 + 1;
+            uint x = y / 2 + 1;
             while (x < z) {
                 z = x;
                 x = (y / x + x) / 2;
@@ -59,7 +59,7 @@ contract ConstantProductAMM{
     /**
      * @notice function returns lower value of inputs
      */
-    function _min(uint256 x, uint256 y) private pure returns (uint256) {
+    function _min(uint x, uint y) private pure returns (uint) {
         return x <= y ? x : y;
     }
 
