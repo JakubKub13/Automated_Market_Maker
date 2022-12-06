@@ -121,6 +121,7 @@ describe("ConstantProductAMM", () => {
         });
 
         it("Should add liquidity Swap tokens, update reserves and remove Liquidity with earned fees", async () => {
+            console.log("--------------------------------------------------------------------------------------------------------");
             const daiLiquidity:BigNumber = await dai.balanceOf(owner.address);
             const wethLiquidity: BigNumber = await weth.balanceOf(owner.address);
             console.log(`Balances of owner when providing liquidity are ${ethers.utils.formatEther(daiLiquidity)} DAI and ${ethers.utils.formatEther(wethLiquidity)} WETH`);
@@ -204,8 +205,12 @@ describe("ConstantProductAMM", () => {
             console.log(`Balance of WETH of account1 after swap 2 is ${ethers.utils.formatEther(balanceOfWethAcc1AfterSwap3)}`);
             console.log(`Balance of DAI of account1 after swap 2 is ${ethers.utils.formatEther(balanceOfDAIAcc1AfterSwap3)}`);
             console.log("--------------------------------------------------------------------------------------------------------");
-            // expect(ethers.utils.formatEther(balanceOfWethAcc1AfterSwap3)).to.eq("0.16903518440291844");
-            // expect(ethers.utils.formatEther(balanceOfDAIAcc1AfterSwap3)).to.eq("0.0");
+            expect(ethers.utils.formatEther(balanceOfWethAcc1AfterSwap3)).to.eq("0.0");
+            expect(ethers.utils.formatEther(balanceOfDAIAcc1AfterSwap3)).to.eq("219.197658854678154938");
+
+            const liquidityShares = await constantProductAMM.sharesPerUser(owner.address);
+            console.log(`Liquidity provider has ${ethers.utils.formatEther(liquidityShares)} LP tokens`);
+            console.log("--------------------------------------------------------------------------------------------------------");
 
 
 
