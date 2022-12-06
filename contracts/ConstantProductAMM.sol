@@ -16,6 +16,7 @@ contract ConstantProductAMM{
 
     event SWAP(address tokenIn, address tokenOut, uint256 amountIn, uint256 amountOut);
     event ADD_LIQUIDITY(address liquidityProvider, uint256 amountA, uint256 amountB, uint256 liquidityShares);
+    event REMOVE_LIQUIDITY(address liquidityRemover, uint256 liquiditySharesToBurn, uint256 amountABack, uint256 amountBBack);
 
     constructor(address _tokenA, address _tokenB) {
         tokenA = IERC20(_tokenA);
@@ -46,7 +47,7 @@ contract ConstantProductAMM{
     function _sqrt(uint y) private pure returns (uint z) {
         if (y > 3) {
             z = y;
-            uint x = y / 2 + 1;
+            uint256 x = y / 2 + 1;
             while (x < z) {
                 z = x;
                 x = (y / x + x) / 2;
@@ -59,7 +60,7 @@ contract ConstantProductAMM{
     /**
      * @notice function returns lower value of inputs
      */
-    function _min(uint x, uint y) private pure returns (uint) {
+    function _min(uint256 x, uint256 y) private pure returns (uint256) {
         return x <= y ? x : y;
     }
 
@@ -81,14 +82,11 @@ contract ConstantProductAMM{
         // Calculate token out with fees, fee = 0.3 %
         // dy(amountOut) = ydx / (x + dx)
         uint256 amountInWithFee = (_amountIn * 997) / 1000;
-        amountOut = (reserveOut * amountInWithFee) / (reserveIn * amountInWithFee);
+        amountOut = (reserveOut * amountInWithFee) / (reserveIn + amountInWithFee);
         // Transfer token out to msg.sender
         tokenOut.transfer(msg.sender, amountOut);
         // Update the reserves of tokens
-        _updateReserves(
-            tokenA.balanceOf(address(this)),
-            tokenB.balanceOf(address(this))
-        );
+        _updateReserves(tokenA.balanceOf(address(this)), tokenB.balanceOf(address(this)));
         emit SWAP(_tokenIn, address(tokenOut), _amountIn, amountOut);
     }
 
@@ -148,5 +146,6 @@ contract ConstantProductAMM{
         // Transfer tokens back to liquidity provider
         tokenA.transfer(msg.sender, amountA);
         tokenB.transfer(msg.sender, amountB);
+        emit REMOVE_LIQUIDITY(msg.sender, _liquidityShares, amountA, amountB);
     }
 }
