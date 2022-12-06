@@ -132,21 +132,39 @@ describe("ConstantProductAMM", () => {
             const addLiquidityTx = await constantProductAMM.addLiquidity(daiLiquidity, wethLiquidity);
             await addLiquidityTx.wait();
 
-            const balanceOfWethAcc1 = await weth.balanceOf(acc1.address);
-            const balanceOfDAIAcc1 = await dai.balanceOf(acc1.address);
+            const balanceOfWethAcc1: BigNumber = await weth.balanceOf(acc1.address);
+            const balanceOfDAIAcc1: BigNumber = await dai.balanceOf(acc1.address);
             console.log(`Balance of WETH of account1 ${ethers.utils.formatEther(balanceOfWethAcc1)}`);
             console.log(`Balance of DAI of account1 is ${ethers.utils.formatEther(balanceOfDAIAcc1)}`);
             expect(ethers.utils.formatEther(balanceOfWethAcc1)).to.eq("0.1");
             expect(ethers.utils.formatEther(balanceOfDAIAcc1)).to.eq("100.0");
 
-            const reserveDaiBeforeSwap = await constantProductAMM.reserveA();
-            const reserveWethBeforeSwap = await constantProductAMM.reserveB();
+            const reserveDaiBeforeSwap: BigNumber = await constantProductAMM.reserveA();
+            const reserveWethBeforeSwap: BigNumber = await constantProductAMM.reserveB();
             console.log(`Reserve of DAI tokens in contract has: ${ethers.utils.formatEther(reserveDaiBeforeSwap)} DAI tokens`);
             console.log(`Reserve of WETH tokens in contract has: ${ethers.utils.formatEther(reserveWethBeforeSwap)} WETH tokens`);
             expect(ethers.utils.formatEther(reserveDaiBeforeSwap)).to.eq("1200.0");
             expect(ethers.utils.formatEther(reserveWethBeforeSwap)).to.eq("0.9");
 
+            const amountToSwap: string = "50" // 50 Dai for Weth
+            const approveSwapTx = await dai.connect(acc1).approve(constantProductAMM.address, ethers.utils.parseEther(amountToSwap));
+            await approveSwapTx.wait()
+            const swapTx = await constantProductAMM.connect(acc1).swap(dai.address, ethers.utils.parseEther(amountToSwap));
+            await swapTx.wait();
 
+            const balanceOfWethAcc1AfterSwap: BigNumber = await weth.balanceOf(acc1.address);
+            const balanceOfDAIAcc1AfterSwap: BigNumber = await dai.balanceOf(acc1.address);
+            console.log(`Balance of WETH of account1 after swap is ${ethers.utils.formatEther(balanceOfWethAcc1AfterSwap)}`);
+            console.log(`Balance of DAI of account1 after swap is ${ethers.utils.formatEther(balanceOfDAIAcc1AfterSwap)}`);
+            expect(ethers.utils.formatEther(balanceOfWethAcc1AfterSwap)).to.eq("0.135896307556906828");
+            expect(ethers.utils.formatEther(balanceOfDAIAcc1AfterSwap)).to.eq("50.0");
+
+            const reserveDaiAfterSwap: BigNumber = await constantProductAMM.reserveA();
+            const reserveWethAfterSwap: BigNumber = await constantProductAMM.reserveB();
+            console.log(`Reserve of DAI tokens in contract has: ${ethers.utils.formatEther(reserveDaiAfterSwap)} DAI tokens`);
+            console.log(`Reserve of WETH tokens in contract has: ${ethers.utils.formatEther(reserveWethAfterSwap)} WETH tokens`);
+            expect(ethers.utils.formatEther(reserveDaiAfterSwap)).to.eq("1250.0");
+            expect(ethers.utils.formatEther(reserveWethAfterSwap)).to.eq("0.864103692443093172");
         });
     });
 })
