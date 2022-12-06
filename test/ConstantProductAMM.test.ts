@@ -211,8 +211,30 @@ describe("ConstantProductAMM", () => {
             const liquidityShares = await constantProductAMM.sharesPerUser(owner.address);
             console.log(`Liquidity provider has ${ethers.utils.formatEther(liquidityShares)} LP tokens`);
             console.log("--------------------------------------------------------------------------------------------------------");
+            expect(Number(ethers.utils.formatEther(liquidityShares))).to.be.greaterThan(0);
 
+            const removeLiquidityTx = await constantProductAMM.removeLiquidity(liquidityShares);
+            await removeLiquidityTx.wait();
 
+            const liquiditySharesAfterRemove = await constantProductAMM.sharesPerUser(owner.address);
+            expect(Number(ethers.utils.formatEther(liquiditySharesAfterRemove))).to.eq(0);
+
+            const daiAfterRemoveLiq:BigNumber = await dai.balanceOf(owner.address);
+            const wethAfterRemoveLiq: BigNumber = await weth.balanceOf(owner.address);
+            console.log(`Balances of owner after removing liquidity are ${ethers.utils.formatEther(daiAfterRemoveLiq)} DAI and ${ethers.utils.formatEther(wethAfterRemoveLiq)} WETH`);
+            console.log("--------------------------------------------------------------------------------------------------------");
+            // 1333 DAIs = 1 weth -----> 1200 + 1200 -> 2400 value in DAI together before providing liquidity
+            // After removing liquidity -> 1333 + 1080.80 -> 2413 value in DAI together after removing liquidity
+
+            const reserveDaiAfterRemove: BigNumber = await constantProductAMM.reserveA();
+            const reserveWethAfterRemove: BigNumber = await constantProductAMM.reserveB();
+            console.log(`Reserve of DAI tokens in contract has: ${ethers.utils.formatEther(reserveDaiAfterRemove)} DAI tokens`);
+            console.log(`Reserve of WETH tokens in contract has: ${ethers.utils.formatEther(reserveWethAfterRemove)} WETH tokens`);
+            expect(Number(ethers.utils.formatEther(reserveDaiAfterRemove))).to.eq(0);
+            expect(Number(ethers.utils.formatEther(reserveWethAfterRemove))).to.eq(0);
+        });
+
+        it("Should fail if user try to manipulate constant product formula", async () => {
 
         });
     });
