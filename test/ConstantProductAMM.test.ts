@@ -1,6 +1,7 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { expect } from "chai";
 import { exec } from "child_process";
+import exp from "constants";
 import { BigNumber, BigNumberish, Contract } from "ethers";
 import { ethers, network } from "hardhat"
 import { ConstantProductAMM, ConstantProductAMM__factory } from "../typechain-types";
@@ -73,34 +74,50 @@ describe("ConstantProductAMM", () => {
         beforeEach(async () => {
             const sendDaiTx = await dai.connect(owner).transfer(acc1.address, ethers.utils.parseEther("100"));
             await sendDaiTx.wait();
-            const sendTetherTx = await weth.connect(owner).transfer(acc1.address, ethers.utils.parseUnits("100", 6));
-            await sendTetherTx.wait();
+            const sendWethTx = await weth.connect(owner).transfer(acc1.address, ethers.utils.parseEther("0.1"));
+            await sendWethTx.wait();
         });
 
         it("Account 1 should be funded on mainnet fork from owner", async () => {
             const acc1BalDAI:BigNumber = await dai.balanceOf(acc1.address);
             expect(ethers.utils.formatEther(acc1BalDAI)).to.eq("100.0");
-            const acc1BalTether:BigNumber = await weth.balanceOf(acc1.address);
-            expect(ethers.utils.formatUnits(acc1BalTether, 6)).to.eq("100.0");
+            const acc1BalWeth:BigNumber = await weth.balanceOf(acc1.address);
+            expect(ethers.utils.formatEther(acc1BalWeth)).to.eq("0.1");
         });
 
         it("Should be able to add liquidity and receive liquidity tokens", async () => {
             const daiLiquidity:BigNumber = await dai.balanceOf(owner.address);
-            const tetherLiquidity: BigNumber = await weth.balanceOf(owner.address);
+            const wethLiquidity: BigNumber = await weth.balanceOf(owner.address);
+
+            const balanceOfWethBefore: BigNumber = await weth.balanceOf(owner.address);
+            const balanceOfDaiBefore: BigNumber = await dai.balanceOf(owner.address);
+
+            console.log(`Balance of weth in owner address before adding liquidity is : ${ethers.utils.formatEther(balanceOfWethBefore)}`);
+            console.log(`Balance of dai in owner address before adding liquidity is :${ethers.utils.formatEther(balanceOfDaiBefore)}`);
+            expect(ethers.utils.formatEther(balanceOfDaiBefore)).to.eq("1200.0");
+            expect(ethers.utils.formatEther(balanceOfWethBefore)).to.eq("0.9");
+
 
             const approveDAITx = await dai.approve(constantProductAMM.address, daiLiquidity);
             await approveDAITx.wait();
-            const approveTetherTx = await weth.approve(constantProductAMM.address, tetherLiquidity);
-            await approveTetherTx.wait();
+            const approveWethTx = await weth.approve(constantProductAMM.address, wethLiquidity);
+            await approveWethTx.wait();
 
-            const addLiquidityTx = await constantProductAMM.addLiquidity(daiLiquidity, tetherLiquidity);
+            const addLiquidityTx = await constantProductAMM.addLiquidity(daiLiquidity, wethLiquidity);
             await addLiquidityTx.wait();
 
             const liquidityTokensOwner = await constantProductAMM.sharesPerUser(owner.address);
             console.log(ethers.utils.formatEther(liquidityTokensOwner));
-            
 
+            const balanceOfWethAfter: BigNumber = await weth.balanceOf(owner.address);
+            const balanceOfDaiAfter: BigNumber = await dai.balanceOf(owner.address);
 
+            console.log(`Balance of weth in owner address before adding liquidity is :${ethers.utils.formatEther(balanceOfWethAfter)}`);
+            console.log(`Balance of dai in owner address before adding liquidity is :${ethers.utils.formatEther(balanceOfDaiAfter)}`);
+
+            expect(ethers.utils.formatEther(balanceOfDaiBefore)).to.eq("1200.0");
+            expect(ethers.utils.formatEther(balanceOfWethBefore)).to.eq("0.9");
+            expect(Number(ethers.utils.formatEther(liquidityTokensOwner))).to.be.greaterThan(0);
         });
 
         it("")
