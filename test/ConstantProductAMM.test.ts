@@ -120,6 +120,33 @@ describe("ConstantProductAMM", () => {
             expect(Number(ethers.utils.formatEther(liquidityTokensOwner))).to.be.greaterThan(0);
         });
 
-        it("")
+        it("Should Swap tokens and update reserves", async () => {
+            const daiLiquidity:BigNumber = await dai.balanceOf(owner.address);
+            const wethLiquidity: BigNumber = await weth.balanceOf(owner.address);
+
+            const approveDAITx = await dai.approve(constantProductAMM.address, daiLiquidity);
+            await approveDAITx.wait();
+            const approveWethTx = await weth.approve(constantProductAMM.address, wethLiquidity);
+            await approveWethTx.wait();
+
+            const addLiquidityTx = await constantProductAMM.addLiquidity(daiLiquidity, wethLiquidity);
+            await addLiquidityTx.wait();
+
+            const balanceOfWethAcc1 = await weth.balanceOf(acc1.address);
+            const balanceOfDAIAcc1 = await dai.balanceOf(acc1.address);
+            console.log(`Balance of WETH of account1 ${ethers.utils.formatEther(balanceOfWethAcc1)}`);
+            console.log(`Balance of DAI of account1 is ${ethers.utils.formatEther(balanceOfDAIAcc1)}`);
+            expect(ethers.utils.formatEther(balanceOfWethAcc1)).to.eq("0.1");
+            expect(ethers.utils.formatEther(balanceOfDAIAcc1)).to.eq("100.0");
+
+            const reserveDaiBeforeSwap = await constantProductAMM.reserveA();
+            const reserveWethBeforeSwap = await constantProductAMM.reserveB();
+            console.log(`Reserve of DAI tokens in contract has: ${ethers.utils.formatEther(reserveDaiBeforeSwap)} DAI tokens`);
+            console.log(`Reserve of WETH tokens in contract has: ${ethers.utils.formatEther(reserveWethBeforeSwap)} WETH tokens`);
+            expect(ethers.utils.formatEther(reserveDaiBeforeSwap)).to.eq("1200.0");
+            expect(ethers.utils.formatEther(reserveWethBeforeSwap)).to.eq("0.9");
+
+
+        });
     });
 })
