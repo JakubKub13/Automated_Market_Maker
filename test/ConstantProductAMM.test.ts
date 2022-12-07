@@ -1,8 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers"
 import { expect } from "chai";
-import { exec } from "child_process";
-import exp from "constants";
-import { BigNumber, BigNumberish, Contract } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import { ethers, network } from "hardhat"
 import { ConstantProductAMM, ConstantProductAMM__factory } from "../typechain-types";
 
@@ -233,9 +231,31 @@ describe("ConstantProductAMM", () => {
             expect(Number(ethers.utils.formatEther(reserveDaiAfterRemove))).to.eq(0);
             expect(Number(ethers.utils.formatEther(reserveWethAfterRemove))).to.eq(0);
         });
-
-        it("Should fail if user try to manipulate constant product formula", async () => {
-
-        });
     });
+
+    describe("Trying to manipulate constant product formula", () => {
+        beforeEach(async () => {
+            const sendDaiTx = await dai.connect(owner).transfer(acc1.address, ethers.utils.parseEther("100"));
+            await sendDaiTx.wait();
+            const sendWethTx = await weth.connect(owner).transfer(acc1.address, ethers.utils.parseEther("0.1"));
+            await sendWethTx.wait();
+            const sendDaiTx2 = await dai.connect(owner).transfer(acc2.address, ethers.utils.parseEther("100"));
+            await sendDaiTx2.wait();
+            const sendWethTx2 = await weth.connect(owner).transfer(acc2.address, ethers.utils.parseEther("0.1"));
+            await sendWethTx2.wait();
+
+            const daiLiquidity:BigNumber = await dai.balanceOf(owner.address);
+            const wethLiquidity: BigNumber = await weth.balanceOf(owner.address);
+            const approveDAITx = await dai.approve(constantProductAMM.address, daiLiquidity);
+            await approveDAITx.wait();
+            const approveWethTx = await weth.approve(constantProductAMM.address, wethLiquidity);
+            await approveWethTx.wait();
+            const addLiquidityTx = await constantProductAMM.addLiquidity(daiLiquidity, wethLiquidity);
+            await addLiquidityTx.wait(); 
+        });
+
+        it("Should not be able to manipulate the constant product formula", async () => {
+            
+        })
+    })
 })
