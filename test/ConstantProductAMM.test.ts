@@ -264,7 +264,13 @@ describe("ConstantProductAMM", () => {
             const wethLiquidity2: string = "0.1";
             const parsedLiquidDAI: BigNumber = ethers.utils.parseEther(daiLiquidity2);
             const parsedLiquityWeth: BigNumber = ethers.utils.parseEther(wethLiquidity2);
-            expect(await constantProductAMM.connect(acc2).addLiquidity(parsedLiquidDAI, parsedLiquityWeth)).to.be.revertedWith("hoh")
+
+            const daiApproveTx = await dai.connect(acc2).approve(constantProductAMM.address, parsedLiquidDAI);
+            await daiApproveTx.wait();
+            const wethApproveTx = await weth.connect(acc2).approve(constantProductAMM.address, parsedLiquityWeth);
+            await wethApproveTx.wait();
+
+            await expect(constantProductAMM.connect(acc2).addLiquidity(parsedLiquidDAI, parsedLiquityWeth)).to.be.revertedWith("ConstantProductAMM: Price manipulation detected")
         })
     })
 })
