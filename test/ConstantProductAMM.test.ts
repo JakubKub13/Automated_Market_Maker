@@ -273,8 +273,11 @@ describe("ConstantProductAMM", () => {
             await expect(constantProductAMM.connect(acc2).addLiquidity(parsedLiquidDAI, parsedLiquityWeth)).to.be.revertedWith("ConstantProductAMM: Price manipulation detected")
         });
 
-        ("Should be able to add only liquidity that fits defined constant product formula", async () => {
-
+        it("Should be able to add only liquidity that fits defined constant product formula", async () => {
+            const reserveOfDAI: BigNumber = await constantProductAMM.reserveA();
+            const reserveWeth: BigNumber = await constantProductAMM.reserveB();
+            expect(ethers.utils.formatEther(reserveOfDAI)).to.eq("1100.0");
+            expect(ethers.utils.formatEther(reserveWeth)).to.eq("0.8");
         });
     });
 });
