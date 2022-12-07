@@ -278,6 +278,18 @@ describe("ConstantProductAMM", () => {
             const reserveWeth: BigNumber = await constantProductAMM.reserveB();
             expect(ethers.utils.formatEther(reserveOfDAI)).to.eq("1100.0");
             expect(ethers.utils.formatEther(reserveWeth)).to.eq("0.8");
+
+            const daiLiquidity2: string = "11";
+            const wethLiquidity2: string = "0.008";
+            const parsedLiquidDAI: BigNumber = ethers.utils.parseEther(daiLiquidity2);
+            const parsedLiquityWeth: BigNumber = ethers.utils.parseEther(wethLiquidity2);
+
+            const daiApproveTx = await dai.connect(acc2).approve(constantProductAMM.address, parsedLiquidDAI);
+            await daiApproveTx.wait();
+            const wethApproveTx = await weth.connect(acc2).approve(constantProductAMM.address, parsedLiquityWeth);
+            await wethApproveTx.wait();
+
+            await expect(constantProductAMM.connect(acc2).addLiquidity(parsedLiquidDAI, parsedLiquityWeth)).to.emit(constantProductAMM, "ADD_LIQUIDITY");
         });
     });
 });
