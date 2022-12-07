@@ -271,6 +271,10 @@ describe("ConstantProductAMM", () => {
             await wethApproveTx.wait();
 
             await expect(constantProductAMM.connect(acc2).addLiquidity(parsedLiquidDAI, parsedLiquityWeth)).to.be.revertedWith("ConstantProductAMM: Price manipulation detected")
-        })
-    })
-})
+        });
+
+        ("Should be able to add only liquidity that fits defined constant product formula", async () => {
+
+        });
+    });
+});
