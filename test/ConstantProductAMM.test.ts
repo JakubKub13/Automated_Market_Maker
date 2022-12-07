@@ -255,7 +255,10 @@ describe("ConstantProductAMM", () => {
         });
 
         it("Should not be able to manipulate the constant product formula", async () => {
-            
+            const reserveOfDAI: BigNumber = await constantProductAMM.reserveA();
+            const reserveWeth: BigNumber = await constantProductAMM.reserveB();
+            expect(ethers.utils.formatEther(reserveOfDAI)).to.eq("1100.0");
+            expect(ethers.utils.formatEther(reserveWeth)).to.eq("0.8");
         })
     })
 })
