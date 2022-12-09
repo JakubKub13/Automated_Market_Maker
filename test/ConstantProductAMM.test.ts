@@ -303,11 +303,31 @@ describe("ConstantProductAMM", () => {
             const balanceDAIAcc2: BigNumber = await dai.balanceOf(acc2.address);
             const balanceWETHAcc2: BigNumber = await weth.balanceOf(acc2.address);
             expect(Number(ethers.utils.formatEther(balanceDAIAcc2))).to.eq(1300);
-            expect(Number(ethers.utils.formatEther(balanceWETHAcc2))).to.eq(0);
+            expect(Number(ethers.utils.formatEther(balanceWETHAcc2))).to.eq(1);
         });
 
-        it("Should test whta happens when acc2 swap for all of the liquidity of one token and LP want withdraw", async () => {
+        it("Should test what happens when acc2 swap for all of the liquidity of one token and LP want withdraw", async () => {
+            console.log("--------------------------------------------------------------------------------------------------------");
+            const daiLiquidity:BigNumber = await dai.balanceOf(owner.address);
+            const wethLiquidity: BigNumber = await weth.balanceOf(owner.address);
+            console.log(`Balances of owner when providing liquidity are ${ethers.utils.formatEther(daiLiquidity)} DAI and ${ethers.utils.formatEther(wethLiquidity)} WETH`);
+            console.log("--------------------------------------------------------------------------------------------------------");
 
+            const approveDAITx = await dai.approve(constantProductAMM.address, daiLiquidity);
+            await approveDAITx.wait();
+            const approveWethTx = await weth.approve(constantProductAMM.address, wethLiquidity);
+            await approveWethTx.wait();
+
+            const addLiquidityTx = await constantProductAMM.addLiquidity(daiLiquidity, wethLiquidity);
+            await addLiquidityTx.wait();
+
+            const reserveDaiBeforeSwap: BigNumber = await constantProductAMM.reserveA();
+            const reserveWethBeforeSwap: BigNumber = await constantProductAMM.reserveB();
+            console.log(`Reserve of DAI tokens in contract has: ${ethers.utils.formatEther(reserveDaiBeforeSwap)} DAI tokens`);
+            console.log(`Reserve of WETH tokens in contract has: ${ethers.utils.formatEther(reserveWethBeforeSwap)} WETH tokens`);
+            console.log("--------------------------------------------------------------------------------------------------------");
+            expect(Number(ethers.utils.formatEther(reserveDaiBeforeSwap))).to.eq(1300.0);
+            expect(Number(ethers.utils.formatEther(reserveWethBeforeSwap))).to.eq(1);
         });
     });
 });
