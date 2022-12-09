@@ -12,6 +12,7 @@ const AMOUNT_DAI_TO_SEND: string = "1300" //1300 DAI
 const AMOUNT_TETHER_TO_SEND: string = "1" // 1 WETH
 
 
+
 describe("ConstantProductAMM", () => {
     let owner: SignerWithAddress;
     let acc1: SignerWithAddress;
@@ -293,7 +294,17 @@ describe("ConstantProductAMM", () => {
     });
 
     describe("Testing unexpected behavior", () => {
+        beforeEach(async () => {
+            await weth.connect(wethWhale).transfer(acc2.address, ethers.utils.parseEther(AMOUNT_TETHER_TO_SEND));
+        });
 
+        it("SHould fund acc2 with DAI and WETH", async () => {
+
+        });
+
+        it("Should test whta happens when acc2 swap for all of the liquidity of one token and LP want withdraw", async () => {
+
+        });
     });
 });
 
