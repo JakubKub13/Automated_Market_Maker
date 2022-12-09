@@ -296,13 +296,14 @@ describe("ConstantProductAMM", () => {
     describe("Testing unexpected behavior", () => {
         beforeEach(async () => {
             await weth.connect(wethWhale).transfer(acc2.address, ethers.utils.parseEther(AMOUNT_TETHER_TO_SEND));
+            await dai.connect(daiWhale).transfer(acc2.address, ethers.utils.parseEther(AMOUNT_DAI_TO_SEND));
         });
 
         it("Should fund acc2 with DAI and WETH", async () => {
             const balanceDAIAcc2: BigNumber = await dai.balanceOf(acc2.address);
-            console.log(balanceDAIAcc2);
             const balanceWETHAcc2: BigNumber = await weth.balanceOf(acc2.address);
-            console.log(balanceWETHAcc2);
+            expect(Number(ethers.utils.formatEther(balanceDAIAcc2))).to.eq(1300);
+            expect(Number(ethers.utils.formatEther(balanceWETHAcc2))).to.eq(0);
         });
 
         it("Should test whta happens when acc2 swap for all of the liquidity of one token and LP want withdraw", async () => {
