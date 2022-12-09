@@ -149,5 +149,3 @@ contract ConstantProductAMM{
         emit REMOVE_LIQUIDITY(msg.sender, _liquidityShares, amountA, amountB);
     }
 }
-
-

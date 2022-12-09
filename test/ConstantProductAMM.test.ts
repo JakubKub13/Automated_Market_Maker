@@ -291,6 +291,10 @@ describe("ConstantProductAMM", () => {
             await expect(constantProductAMM.connect(acc2).addLiquidity(parsedLiquidDAI, parsedLiquityWeth)).to.emit(constantProductAMM, "ADD_LIQUIDITY");
         });
     });
+
+    describe("Testing unexpected behavior", () => {
+
+    });
 });
 
 
