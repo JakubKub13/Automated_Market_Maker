@@ -328,6 +328,11 @@ describe("ConstantProductAMM", () => {
             console.log("--------------------------------------------------------------------------------------------------------");
             expect(Number(ethers.utils.formatEther(reserveDaiBeforeSwap))).to.eq(1300.0);
             expect(Number(ethers.utils.formatEther(reserveWethBeforeSwap))).to.eq(1);
+
+            const balanceDAIAcc2: BigNumber = await dai.balanceOf(acc2.address);
+
+            const swapTx = await constantProductAMM.connect(acc2).swap(dai.address, balanceDAIAcc2);
+            await swapTx.wait();
         });
     });
 });
