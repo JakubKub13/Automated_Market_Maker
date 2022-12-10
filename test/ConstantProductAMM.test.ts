@@ -345,10 +345,12 @@ describe("ConstantProductAMM", () => {
             console.log(`WETH reserve in contract after swap is ${ethers.utils.formatEther(reserveWETHafterSwap)}`);
 
             const balanceDAIacc2After: BigNumber = await dai.balanceOf(acc2.address);
+            const balanceWETHacc2After: BigNumber = await weth.balanceOf(acc2.address);
 
-            
-          
+            console.log(`Balance of account 2 after swap is ${ethers.utils.formatEther(balanceDAIacc2After)} DAI`);
+            console.log(`Balance of account 2 after swap is ${ethers.utils.formatEther(balanceWETHacc2After)} WETH `);
 
+            expect(ethers.utils.formatEther(balanceDAIacc2After)).to.eq("0");
         });
     });
 });
