@@ -350,7 +350,7 @@ describe("ConstantProductAMM", () => {
             console.log(`Balance of account 2 after swap is ${ethers.utils.formatEther(balanceDAIacc2After)} DAI`);
             console.log(`Balance of account 2 after swap is ${ethers.utils.formatEther(balanceWETHacc2After)} WETH `);
 
-            expect(ethers.utils.formatEther(balanceDAIacc2After)).to.eq("0");
+            expect(ethers.utils.formatEther(balanceDAIacc2After)).to.eq("0.0");
         });
     });
 });
