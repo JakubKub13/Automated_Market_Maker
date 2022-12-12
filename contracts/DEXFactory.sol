@@ -5,4 +5,8 @@ import "./ConstantProductAMM.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 
-contract DEXFactory is AccessControl {}
+contract DEXFactory is AccessControl {
+    address public owner;
+    ConstantProductAMM public pair;
+
+}
