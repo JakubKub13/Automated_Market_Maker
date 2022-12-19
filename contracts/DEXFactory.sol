@@ -27,10 +27,11 @@ contract DEXFactory is Ownable {
         return newPair; 
     }
 
-    
-
-
-
-
-
+    function ownerFeeWithdraw(address _to, uint256 _amount) external onlyOwner {
+        require(_amount <= ownerFeePool, "DEXFactory: Can not withdraw more more money then available in Fee Pool");
+        ownerFeePool -= _amount;
+        (bool success, ) = payable(_to).call{value: _amount}("");
+        require(success, "DEXFactory: Tx has failded try again");
+        emit FeeWthdrawal(_to, _amount, block.timestamp);
+    }
 }
