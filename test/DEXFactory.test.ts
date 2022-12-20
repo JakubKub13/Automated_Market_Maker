@@ -48,7 +48,10 @@ describe("DEXFactory", async () => {
     });
 
     it("Should deploy without errors", async () => {
-
+        let createPairFeeBn: BigNumber = await dexFactory.createPairFee();
+        console.log(`Creation pair fee is set to be: ${ethers.utils.formatEther(createPairFeeBn)}`);
+        let creationFee = ethers.utils.formatEther(createPairFeeBn);
+        expect(Number(creationFee)).to.eq(0.01);
     });
 
     it("Should be able to create instance of Pair", async () => {
