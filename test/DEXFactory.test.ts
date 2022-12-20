@@ -85,6 +85,17 @@ describe("DEXFactory", async () => {
     });
 
     it("Should not be able to create the pair for tokens that already has pair created", async () => {
+        const creationTx = await dexFactory.connect(acc1).createPair(
+            TOKEN_A_ADDRESS,
+            TOKEN_B_ADDRESS,
+            {value: ethers.utils.parseEther(creationFee)}
+            );
+        await creationTx.wait();
 
+        await expect(dexFactory.connect(owner).createPair(
+            TOKEN_A_ADDRESS,
+            TOKEN_B_ADDRESS,
+            {value: ethers.utils.parseEther(creationFee)}
+        )).to.be.revertedWith("DEXFactory: This tokens already has pair created");
     });
 })
