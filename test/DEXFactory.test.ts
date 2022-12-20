@@ -74,6 +74,11 @@ describe("DEXFactory", async () => {
             {value: ethers.utils.parseEther(creationFee)}
             );
         await creationTx.wait();
+        const ownerPoolWithdrawTx = await dexFactory.connect(owner).ownerFeeWithdraw(owner.address, await dexFactory.ownerFeePool());
+        await ownerPoolWithdrawTx.wait();
+
+        const ownerBalanceAfter: BigNumber = await ethers.provider.getBalance(owner.address);
+        console.log(`Balance of ETH of owner after pair creation and pool withdraw is ${ethers.utils.formatEther(ownerBalanceAfter)} ETH`);
 
 
     });
