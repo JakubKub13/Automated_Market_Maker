@@ -55,6 +55,13 @@ describe("DEXFactory", async () => {
     });
 
     it("Should be able to create instance of Pair", async () => {
+        const pair = await dexFactory.connect(acc1).createPair(
+            TOKEN_A_ADDRESS,
+            TOKEN_B_ADDRESS,
+            {value: ethers.utils.parseEther(creationFee)}
+            );
+        //await createPairTx.wait();
+        console.log(pair)
 
     });
 
