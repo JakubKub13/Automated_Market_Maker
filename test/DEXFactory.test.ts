@@ -66,6 +66,15 @@ describe("DEXFactory", async () => {
     });
 
     it("Owner should be able to withdraw from ownerFeePool", async () => {
+        const ownerBalBefore: BigNumber = await ethers.provider.getBalance(owner.address);
+        console.log(`Balance of ETH of owner before pair creation is ${ethers.utils.formatEther(ownerBalBefore)} ETH`)
+        const creationTx = await dexFactory.connect(acc1).createPair(
+            TOKEN_A_ADDRESS,
+            TOKEN_B_ADDRESS,
+            {value: ethers.utils.parseEther(creationFee)}
+            );
+        await creationTx.wait();
+
 
     });
 
