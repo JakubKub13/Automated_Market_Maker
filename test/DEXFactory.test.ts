@@ -47,5 +47,19 @@ describe("DEXFactory", async () => {
         dexFactory = await DEXFactoryFac.deploy(ethers.utils.parseEther(creationFee));
     });
 
-    
+    it("Should deploy without errors", async () => {
+
+    });
+
+    it("Should be able to create instance of Pair", async () => {
+
+    });
+
+    it("Owner should be able to withdraw from ownerFeePool", async () => {
+
+    });
+
+    it("Should not be able to create the pair for tokens that already has pair created", async () => {
+
+    });
 })
