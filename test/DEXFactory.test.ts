@@ -55,14 +55,14 @@ describe("DEXFactory", async () => {
     });
 
     it("Should be able to create instance of Pair", async () => {
-        const pair = await dexFactory.connect(acc1).createPair(
+        const creationTx = await dexFactory.connect(acc1).createPair(
             TOKEN_A_ADDRESS,
             TOKEN_B_ADDRESS,
             {value: ethers.utils.parseEther(creationFee)}
             );
-        //await createPairTx.wait();
-        console.log(pair)
-
+        await creationTx.wait();
+        expect(await dexFactory.isPairCreated(TOKEN_A_ADDRESS, TOKEN_B_ADDRESS)).to.eq(true);
+        expect(await dexFactory.isPairCreated(TOKEN_B_ADDRESS, TOKEN_A_ADDRESS)).to.eq(true); 
     });
 
     it("Owner should be able to withdraw from ownerFeePool", async () => {
