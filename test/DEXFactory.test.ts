@@ -97,5 +97,11 @@ describe("DEXFactory", async () => {
             TOKEN_B_ADDRESS,
             {value: ethers.utils.parseEther(creationFee)}
         )).to.be.revertedWith("DEXFactory: This tokens already has pair created");
+
+        await expect(dexFactory.connect(owner).createPair(
+            TOKEN_B_ADDRESS,
+            TOKEN_A_ADDRESS,
+            {value: ethers.utils.parseEther(creationFee)}
+        )).to.be.revertedWith("DEXFactory: This tokens already has pair created");
     });
 })
