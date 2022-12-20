@@ -29,5 +29,20 @@ describe("DEXFactory", async () => {
             method: "hardhat_impersonateAccount",
             params: [DAI_WHALE]
         });
-    })
+
+        dai = await ethers.getContractAt("IERC20", TOKEN_A_ADDRESS);
+        daiWhale = await ethers.getSigner(DAI_WHALE);
+        await dai.connect(daiWhale).transfer(acc1.address, ethers.utils.parseEther(AMOUNT_DAI_TO_SEND));
+
+        await network.provider.request({
+            method: "hardhat_impersonateAccount",
+            params: [WETH_WHALE]
+        });
+
+        weth = await ethers.getContractAt("IERC20", TOKEN_B_ADDRESS);
+        wethWhale = await ethers.getSigner(WETH_WHALE);
+        await weth.connect(wethWhale).transfer(acc1.address, ethers.utils.parseEther(AMOUNT_TETHER_TO_SEND));
+
+        DEXFactoryFac = await ethers.getContractFactory("DEXFactory")
+    });
 })
