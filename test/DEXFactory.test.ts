@@ -66,8 +66,8 @@ describe("DEXFactory", async () => {
     });
 
     it("Owner should be able to withdraw from ownerFeePool", async () => {
-        const ownerBalBefore: BigNumber = await ethers.provider.getBalance(owner.address);
-        console.log(`Balance of ETH of owner before pair creation is ${ethers.utils.formatEther(ownerBalBefore)} ETH`)
+        const ownerBalBeforeBn: BigNumber = await ethers.provider.getBalance(owner.address);
+        console.log(`Balance of ETH of owner before pair creation is ${ethers.utils.formatEther(ownerBalBeforeBn)} ETH`)
         const creationTx = await dexFactory.connect(acc1).createPair(
             TOKEN_A_ADDRESS,
             TOKEN_B_ADDRESS,
@@ -77,10 +77,11 @@ describe("DEXFactory", async () => {
         const ownerPoolWithdrawTx = await dexFactory.connect(owner).ownerFeeWithdraw(owner.address, await dexFactory.ownerFeePool());
         await ownerPoolWithdrawTx.wait();
 
-        const ownerBalanceAfter: BigNumber = await ethers.provider.getBalance(owner.address);
-        console.log(`Balance of ETH of owner after pair creation and pool withdraw is ${ethers.utils.formatEther(ownerBalanceAfter)} ETH`);
-
-
+        const ownerBalanceAfterBn: BigNumber = await ethers.provider.getBalance(owner.address);
+        console.log(`Balance of ETH of owner after pair creation and pool withdraw is ${ethers.utils.formatEther(ownerBalanceAfterBn)} ETH`);
+        const ownerBalBef: string = ethers.utils.formatEther(ownerBalBeforeBn);
+        const ownerBalAft: string = ethers.utils.formatEther(ownerBalanceAfterBn);
+        expect(Number(ownerBalBef)).to.be.lessThan(Number(ownerBalAft));
     });
 
     it("Should not be able to create the pair for tokens that already has pair created", async () => {
