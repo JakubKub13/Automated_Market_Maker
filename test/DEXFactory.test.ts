@@ -2,6 +2,7 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { BigNumber, Contract } from "ethers";
 import { ethers, network } from "hardhat";
+import { DEXFactory, DEXFactory__factory } from "../typechain-types";
 
 const creationFee: Number = 0.01 // eth
 const DAI_WHALE: string = "0xAEb2DAe192b2836735851Fd06a42aD04E7e99f3B";
@@ -10,3 +11,23 @@ const TOKEN_A_ADDRESS: string = "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063"; //
 const TOKEN_B_ADDRESS: string = "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"; // WETH polygon
 const AMOUNT_DAI_TO_SEND: string = "1300" //1300 DAI
 const AMOUNT_TETHER_TO_SEND: string = "1" // 1 WETH
+
+describe("DEXFactory", async () => {
+    let owner: SignerWithAddress;
+    let acc1: SignerWithAddress;
+    let daiWhale: SignerWithAddress;
+    let wethWhale: SignerWithAddress;
+    let DEXFactoryFac: DEXFactory__factory;
+    let dexFactory: DEXFactory;
+    let dai: Contract;
+    let weth: Contract;
+
+    beforeEach(async () => {
+        [owner, acc1] = await ethers.getSigners();
+
+        await network.provider.request({
+            method: "hardhat_impersonateAccount",
+            params: [DAI_WHALE]
+        });
+    })
+})
