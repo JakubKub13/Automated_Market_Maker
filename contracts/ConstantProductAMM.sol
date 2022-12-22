@@ -11,7 +11,7 @@ contract ConstantProductAMM{
     uint256 public reserveA;
     uint256 public reserveB;
     // Vars to keep track of totalSupplyShares and shares for user
-    uint256 public totalSupplyShares;
+    uint256 public totalSupplyShares;  
     mapping(address => uint256) public sharesPerUser;
 
     event SWAP(address tokenIn, address tokenOut, uint256 amountIn, uint256 amountOut);
@@ -32,6 +32,7 @@ contract ConstantProductAMM{
         sharesPerUser[_from] -= _amount;
         totalSupplyShares -= _amount;
     }
+
 
     /**
      * @notice internal function to update state of reserves
@@ -76,7 +77,7 @@ contract ConstantProductAMM{
         // Pull token in
         bool isTokenA = _tokenIn == address(tokenA);
         (IERC20 tokenIn, IERC20 tokenOut, uint256 reserveIn, uint256 reserveOut) = isTokenA
-            ? (tokenA, tokenB, reserveA, reserveB)
+            ? (tokenA, tokenB, reserveA, reserveB)  
             : (tokenB, tokenA, reserveB, reserveA);
         tokenIn.transferFrom(msg.sender, address(this), _amountIn);
         // Calculate token out with fees, fee = 0.3 %
@@ -149,3 +150,11 @@ contract ConstantProductAMM{
         emit REMOVE_LIQUIDITY(msg.sender, _liquidityShares, amountA, amountB);
     }
 }
+
+
+
+
+
+
+
+
